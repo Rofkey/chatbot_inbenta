@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Api\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/info', function () {
     return view('welcome');
 });
+
+Route::get('/', [ChatbotController::class, 'index']);
+
+Route::get('access_token',[ChatController::class,'token']);
+Route::get('/session_token',[ChatController::class,'session']);
+Route::get('/send_message',[ChatController::class,'sendMessage']);
+Route::get('/get_history',[ChatController::class,'getHistory']);

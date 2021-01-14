@@ -15,8 +15,8 @@ class Chatbot extends Migration
     {
         Schema::create('chatbot', function(Blueprint $table){
             $table->increments('id'); //Predefined ID
-            $table->string('message'); // Message
-            $table->set('emitter',['YodaBot', 'Me']); // Set for emitter
+            $table->string('session'); // Conection Session
+            $table->string('token'); // Conection Session
             $table->timestamps(); //Predefined Timestams
         });
     }
