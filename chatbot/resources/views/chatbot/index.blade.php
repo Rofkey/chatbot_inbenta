@@ -29,7 +29,7 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-12 col-sm-10 m-0 p-0">
-                            <input type="text" name="message" class="form-control" id="message">
+                            <input required type="text" name="message" class="form-control" id="message">
                         </div>
                         <div class="col-12 col-sm-2 m-0 p-0">
                             <button style="width:100%; height:100%" class="btn btn-success" id="submit">Send!</button>    
