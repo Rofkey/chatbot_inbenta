@@ -13,10 +13,10 @@ class Chatbot extends Migration
      */
     public function up()
     {
-        Schema::create('chatbot', function(Blueprint $table){
+        Schema::create('chatbots', function(Blueprint $table){
             $table->increments('id'); //Predefined ID
+            $table->string('token'); // Conection Token
             $table->string('session'); // Conection Session
-            $table->string('token'); // Conection Session
             $table->timestamps(); //Predefined Timestams
         });
     }
@@ -28,6 +28,6 @@ class Chatbot extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('chatbot');
+        Schema::dropIfExists('chatbots');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Chatbot;
+use App\Http\Controllers\Api\ChatController;
 use Illuminate\Http\Request;
 
 class ChatbotController extends Controller
@@ -22,9 +23,27 @@ class ChatbotController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function completeConection($conection)
     {
-        //
+        $apiController = new ChatController;
+        $token = $apiController->token();
+        $session = $apiController->session($token);
+        $conection->setToken($token);
+        $conection->setSession($session);
+        $conection->save();
+    }
+
+     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function newSession($conection)
+    {
+        $apiController = new ChatController;
+        $session = $apiController->session($conection->getToken());
+        $conection->setSession($session);
+        $conection->save();
     }
 
     /**
