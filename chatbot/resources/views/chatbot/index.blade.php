@@ -57,6 +57,7 @@
             $.ajax({
                 url: 'send_message',
                 type:"GET",
+                data: {'message': message},
                 success: function(data){
                     $('#writting').hide();
 

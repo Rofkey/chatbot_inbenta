@@ -76,6 +76,8 @@ class ChatController extends Controller
     }
 
     public function sendMessage(){
+        $message = $_GET['message'];
+
         //Cargamos controlador para controlar todo el chat.
         $controller = new ChatbotController;
         //Buscamos la ultima conecci alguna session creada.
@@ -103,13 +105,11 @@ class ChatController extends Controller
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS =>'{
-            "message": "How can I repair my TV?",
-            "option": "10",
-            "directCall": "ESCALATE_FORM"
+            "message": "'.$message.'"
         }',
         CURLOPT_HTTPHEADER => array(
             'x-inbenta-key: nyUl7wzXoKtgoHnd2fB0uRrAv0dDyLC+b4Y6xngpJDY=',
-            'x-inbenta-session: '.$session,
+            'x-inbenta-session: Bearer '.$session,
             'Authorization: Bearer '.$token,
             'Content-Type: application/json'
         ),
@@ -122,8 +122,7 @@ class ChatController extends Controller
 
         $header = substr($response, 0,$header_size);
         $body = substr($response, $header_size);
-        $array = json_decode($body, true);
-        
+        $array = json_decode($response, true);
         curl_close($curl);
 
         //User unauthorized -> Create a new Chatbot (Token + Sesion).
@@ -140,8 +139,7 @@ class ChatController extends Controller
             $response = 'false';
         }
 
-
-        return $response;
+        return $array['answers'][0]['message'];
     }
 
     public function getHistory(Request $request){
@@ -163,7 +161,7 @@ class ChatController extends Controller
           CURLOPT_CUSTOMREQUEST => 'GET',
           CURLOPT_HTTPHEADER => array(
             'x-inbenta-key: nyUl7wzXoKtgoHnd2fB0uRrAv0dDyLC+b4Y6xngpJDY=',
-            'x-inbenta-session: '.$session,
+            'x-inbenta-session: Bearer '.$session,
             'Authorization: Bearer '.$token
           ),
         ));
