@@ -22,7 +22,11 @@ class ChatbotController extends Controller
             $this->completeConection();
         }
         $history = $apiController->getHistory();
-        return view('chatbot/index',['history' => $history]);
+        $data = [];
+        if($history != 'false'){
+            $data = ['history' =>$history];
+        }
+        return view('chatbot/index', $data);
     }
 
     /**

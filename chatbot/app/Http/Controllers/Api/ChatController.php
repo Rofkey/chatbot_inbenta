@@ -138,7 +138,9 @@ class ChatController extends Controller
     }
 
     public function getHistory(){
-
+        //Load controller to call functions.
+        $controller = new ChatbotController;
+        
         //load session and token
         $token = session()->get('accessToken');
         $session = session()->get('sessionToken');
@@ -166,6 +168,17 @@ class ChatController extends Controller
         $responseInfo = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $responseArray = json_decode($response, true);
         curl_close($curl);
+        //User unauthorized -> Create a new Chatbot (Token + Sesion).
+        if($responseInfo !== 400 && $responseInfo !== 200){  
+            $controller->completeConection();
+            return 'false';
+        }
+
+        //Session Expired -> Create a new Session conversation
+        if($responseInfo === 400){
+            $controller->newSession();
+            return 'false';
+        }
 
         return $responseArray;
     }
