@@ -65,7 +65,7 @@ class ChatbotController extends Controller
         foreach($history as $key =>$message){
             //if user say "force" 
             if($message['user'] === 'user'){
-                $haveForce = strpos($message['message'], 'force');
+                $haveForce = strpos(strtolower($message['message']), 'force');
                 if($haveForce !== false){
                     //$messageApi = $apiController->getMessageFilms();
                     $haveForceBool = true;
@@ -76,6 +76,7 @@ class ChatbotController extends Controller
                     $messageApi = $apiController->getMessageFilms();
                     $history[$key]['messageList'] = $messageApi;
                     $haveForceBool = false;
+                    $count = 0;
                 }else{
                     //see if is the second "not found"
                     $notFound = strpos($message['message'], "couldn't find");

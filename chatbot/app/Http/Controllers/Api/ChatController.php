@@ -136,9 +136,10 @@ class ChatController extends Controller
 
         if($response !== 'false'){
             //see if message contain "force"
-            $force = strpos($message, "force");
+            $force = strpos(strtolower($message), "force");
             if($force !== false){
                 $response = $this->getMessageFilms();
+                session()->put('notFound', 0);
             } else{
 
                 //see if is the second "not found"
