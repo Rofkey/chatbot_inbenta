@@ -30,11 +30,11 @@ class ChatbotController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function completeConection($conection = null)
+    public function completeConection()
     {
         $apiController = new ChatController;
         $apiController->token();
-        $apiController->session($token);
+        $apiController->session(session()->get('accessToken'));
     }
 
      /**
@@ -42,9 +42,9 @@ class ChatbotController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function newSession($conection)
+    public function newSession()
     {
-       $apiController->session($conection->getToken());
+       $apiController->session(session()->get('accessToken'));
     }
 
 }

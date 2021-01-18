@@ -118,14 +118,13 @@ class ChatController extends Controller
 
         //User unauthorized -> Create a new Chatbot (Token + Sesion).
         if($responseInfo !== 400 && $responseInfo !== 200){  
-            $conection = new Chatbot;
-            $controller->completeConection($conection);
+            $controller->completeConection();
             return 'false';
         }
 
         //Session Expired -> Create a new Session conversation
         if($responseInfo === 400){
-            $controller->newSession($conection);
+            $controller->newSession();
             return 'false';
         }
         
