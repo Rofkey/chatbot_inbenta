@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Chatbot;
 use App\Http\Controllers\Api\ChatController;
 use Illuminate\Http\Request;
 
@@ -16,6 +15,12 @@ class ChatbotController extends Controller
     public function index()
     {
         $apiController = new ChatController;
+        //if not exist token or session -> New conection.
+        $token = session()->get('accessToken');
+        $session = session()->get('sessionToken');
+        if(!$token || !$session){
+            $this->completeConection();
+        }
         $history = $apiController->getHistory();
         return view('chatbot/index',['history' => $history]);
     }
@@ -25,14 +30,11 @@ class ChatbotController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function completeConection($conection)
+    public function completeConection($conection = null)
     {
         $apiController = new ChatController;
-        $token = $apiController->token();
-        $session = $apiController->session($token);
-        $conection->setToken($token);
-        $conection->setSession($session);
-        $conection->save();
+        $apiController->token();
+        $apiController->session($token);
     }
 
      /**
@@ -42,65 +44,7 @@ class ChatbotController extends Controller
      */
     public function newSession($conection)
     {
-        $apiController = new ChatController;
-        $session = $apiController->session($conection->getToken());
-        $conection->setSession($session);
-        $conection->save();
+       $apiController->session($conection->getToken());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Chatbot  $chatbot
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Chatbot $chatbot)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Chatbot  $chatbot
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Chatbot $chatbot)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Chatbot  $chatbot
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Chatbot $chatbot)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Chatbot  $chatbot
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Chatbot $chatbot)
-    {
-        //
-    }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ChatbotController;
-use App\Chatbot;
 use Illuminate\Http\Request;
 use Session;
 
@@ -40,58 +39,53 @@ class ChatController extends Controller
         curl_close($curl);
 
         $responseArray = json_decode($response,true);
-        
-        return $responseArray['accessToken'];
+
+        if (isset($responseArray['accessToken'])){
+            session()->put('accessToken', $responseArray['accessToken']);
+        }
     }
 
 
      /**
-     * newSession() return the actual session or create a new session
+     * newSession() create or update a new session
      * @param boolean $new
      * @return string 
      */
     public function session($token){  
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api-gce3.inbenta.io/prod/chatbot/v1/conversation',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_HTTPHEADER => array(
-                'x-inbenta-key: nyUl7wzXoKtgoHnd2fB0uRrAv0dDyLC+b4Y6xngpJDY=',
-                'Authorization: Bearer '.$token
-            ),
-            ));
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api-gce3.inbenta.io/prod/chatbot/v1/conversation',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_HTTPHEADER => array(
+            'x-inbenta-key: nyUl7wzXoKtgoHnd2fB0uRrAv0dDyLC+b4Y6xngpJDY=',
+            'Authorization: Bearer '.$token
+        ),
+        ));
 
-            $response = curl_exec($curl);
-            curl_close($curl);
+        $response = curl_exec($curl);
+        curl_close($curl);
 
-            $responseArray = json_decode($response,true);
-           
-        return  $responseArray['sessionToken'];
+        $responseArray = json_decode($response,true);
+        if (isset($responseArray['sessionToken'])){
+            session()->put('sessionToken', $responseArray['sessionToken']);
+        }
     }
 
     public function sendMessage(){
         $message = $_GET['message'];
 
-        //Cargamos controlador para controlar todo el chat.
+        //Load controller to call functions.
         $controller = new ChatbotController;
-        //Buscamos la ultima conecci alguna session creada.
-        $conection = Chatbot::latest()->first();
 
-        //si no existe se crea el token y se genera una nueva session de conversación.
-        if(!$conection){
-            //create a new ChatBot
-            $conection = new Chatbot;
-            $controller->completeConection($conection);
-        }else{
-            $token = $conection->getToken();
-            $session = $conection->getSession();
-        }
+        //get token and session to "session"
+        $token = session()->get('accessToken');
+        $session = session()->get('sessionToken');
       
         $curl = curl_init();
 
@@ -145,20 +139,10 @@ class ChatController extends Controller
     }
 
     public function getHistory(){
-        //Cargamos controlador para controlar todo el chat.
-        $controller = new ChatbotController;
-        //Buscamos la ultima conecci alguna session creada.
-        $conection = Chatbot::latest()->first();
 
-        //si no existe se crea el token y se genera una nueva session de conversación.
-        if(!$conection){
-            //create a new ChatBot
-            $conection = new Chatbot;
-            $controller->completeConection($conection);
-        }
-
-        $token = $conection->getToken();
-        $session = $conection->getSession();
+        //load session and token
+        $token = session()->get('accessToken');
+        $session = session()->get('sessionToken');
 
         $curl = curl_init();
 
