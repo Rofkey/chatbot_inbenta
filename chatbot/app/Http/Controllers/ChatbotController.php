@@ -49,7 +49,8 @@ class ChatbotController extends Controller
      */
     public function newSession()
     {
-       $apiController->session(session()->get('accessToken'));
+        $apiController = new ChatController;
+        $apiController->session(session()->get('accessToken'));
     }
 
     /***

@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-   </head>
+</head>
 <body>
     <div class="container">
         <div class="row">
-            <h1 class="text-center">YodaBot</h1>
+            <h1 class="text-center mt-5">YodaBot</h1>
         </div>
         <div class="row">
-            <div class ="col" style="">
+            <div class ="col-12">
                 <ul id="chatBody">
                 @isset($history)
                     @foreach($history as $key => $messages)
@@ -43,22 +43,24 @@
             </div>
          </div>
         <div class="row">
-        <div class="col-12">
-            <span id="writting" style="display: none;">Yodabot is writting...</span>
-        </div>
-            <form id="yodabotForm">
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-12 col-sm-10 m-0 p-0">
-                            <input required type="text" name="message" class="form-control" id="message">
-                        </div>
-                        <div class="col-12 col-sm-2 m-0 p-0">
-                            <button style="width:100%; height:100%" class="btn btn-success" id="submit">Send!</button>    
+            <div class="col-12">
+                <span id="writting" style="display: none;">Yodabot is writting...</span>
+            </div>
+
+                <form id="yodabotForm">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-12 col-sm-10 mt-1">
+                                <input required type="text" name="message" class="form-control" id="message">
+                            </div>
+                            <div class="col-12 col-sm-2 mt-1">
+                                <button style="width:100%; height:100%" class="btn btn-success" id="submit">Send!</button>    
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
         </div>
+
     </div>
     
 </body>
