@@ -19,15 +19,24 @@
             <div class ="col" style="">
                 <ul id="chatBody"style = "list-style-type:circle">
                 @isset($history)
-                    @foreach($history as $message)
-                        <li>
-                            @if($message['user'] === 'user')
-                            <span class='fw-bold'>Me: </span>
-                            @else
-                            <span class='fw-bold'>YodaBot: </span>
-                            @endif    
-                            {{$message['message'] }}
-                        </li>
+                    @foreach($history as $key => $messages)
+                        @foreach($messages['messageList'] as $key=> $message)
+                                @if($messages['user'] === 'user')
+                                    <li>
+                                    <span class='fw-bold'>Me: </span>{{$message}}
+                                    </li>
+                                
+                                @else
+                                    @if($key === 0)
+                                        <li>
+                                        <span class='fw-bold'>YodaBot: </span> {{$message}}
+                                        </li>
+                                    @else
+                                        <ul><li>{{$message}}</li></ul>
+                                    @endif    
+                                @endif    
+                            </li>
+                        @endforeach
                     @endforeach
                 @endisset
                 </ul>
@@ -72,9 +81,15 @@
                 data: {'message': message},
                 success: function(data){
                     $('#writting').hide();
-
-                    if(data !== 'false')
-                        $('#chatBody').append('<li> <span class="fw-bold">YodaBot: </span>'+data+'</li>');
+                    if(data !== 'false'){
+                        $.each(data, function(key, message){
+                            if(key == 0){
+                                $('#chatBody').append('<li> <span class="fw-bold">YodaBot: </span>'+message+'</li>');
+                            }else{
+                                $('#chatBody').append('<ul><li>'+message+'</li></ul>');
+                            }
+                        });
+                    }
                     else{
                         $('#chatBody').html('');
                         alert("Session expired (Creating a new session...)");

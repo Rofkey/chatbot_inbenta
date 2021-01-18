@@ -21,7 +21,8 @@ class ChatbotController extends Controller
         if(!$token || !$session){
             $this->completeConection();
         }
-        $history = $apiController->getHistory();
+        $history = $this->formatHistory($apiController->getHistory());
+        
         $data = [];
         if($history != 'false'){
             $data = ['history' =>$history];
@@ -49,6 +50,53 @@ class ChatbotController extends Controller
     public function newSession()
     {
        $apiController->session(session()->get('accessToken'));
+    }
+
+    /***
+     * get history and format the tip5 and return history
+     */
+    public function formatHistory($history){
+        $apiController = new ChatController;
+        //counter of not found messages
+        $count = 0;
+        $haveForceBool = false;
+        foreach($history as $key =>$message){
+            //if user say "force" 
+            if($message['user'] === 'user'){
+                $haveForce = strpos($message['message'], 'force');
+                if($haveForce !== false){
+                    //$messageApi = $apiController->getMessageFilms();
+                    $haveForceBool = true;
+                    //$history[$key+1]['messageList'] = $messageApi;
+                }
+            }else{
+                if($haveForceBool){
+                    $messageApi = $apiController->getMessageFilms();
+                    $history[$key]['messageList'] = $messageApi;
+                    $haveForceBool = false;
+                }else{
+                    //see if is the second "not found"
+                    $notFound = strpos($message['message'], "couldn't find");
+                    if(!$notFound)
+                        $notFound =strpos($message['message'], "Please search again");
+                    if(!$notFound){
+                        $count=0;
+                    }else{
+                        $count++;
+                    }
+                    if($count >1){
+                        //call to get heros
+                        $messageApi = $apiController->getMessageHeroes();
+                        $history[$key]['messageList'] = $messageApi;
+                        $count=0;
+
+                    }
+
+                        
+                }
+            }    
+        }
+        return $history;
     }
 
 }

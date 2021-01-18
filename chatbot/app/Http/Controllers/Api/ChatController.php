@@ -129,9 +129,37 @@ class ChatController extends Controller
         }
         
         if(isset($responseArray['answers'])){
-            $response = $responseArray['answers'][0]['message'];
+            $response = $responseArray['answers'][0]['messageList'];
         }else{
             $response = 'false';
+        }
+
+        if($response !== 'false'){
+            //see if message contain "force"
+            $force = strpos($message, "force");
+            if($force !== false){
+                $response = $this->getMessageFilms();
+            } else{
+
+                //see if is the second "not found"
+                $notFound = isset($responseArray['answers'][0]['flags'][0])?$responseArray['answers'][0]['flags'][0]:null;
+                //counter of not found messages
+                $count = session()->get('notFound');
+                
+                if(!$notFound){
+                    session()->put('notFound', 0);
+                    $count = session()->get('notFound');
+                }else{
+                    $count++;
+                    session()->put('notFound', $count);
+                }
+                
+                if($count >1){
+                    //call to get heros
+                    $response = $this->getMessageHeroes();
+                    session()->put('notFound', 0);
+                }
+            }
         }
 
         return $response;
@@ -181,5 +209,88 @@ class ChatController extends Controller
         }
 
         return $responseArray;
+    }
+
+
+    //Get heros
+    function getHeroes(){
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://inbenta-graphql-swapi-prod.herokuapp.com/api',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS =>'{"query":"{allPeople(first: 10){people{name}}}","variables":{}}',
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json'
+        ),
+        ));
+
+        $response = curl_exec($curl);
+        $errors = curl_error($curl);
+        $responseInfo = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $responseArray = json_decode($response, true);
+
+        curl_close($curl);
+        return $responseArray;
+
+    }
+
+
+    //Convert heroes in messages
+    public function getMessageHeroes(){
+        $heroes = $this->getHeroes();
+        $response = [];
+        $response[] = "I haven't found any results, but here is a list of some Star wars characters: ";
+        foreach($heroes['data']['allPeople']['people'] as $hero){
+            $response[] = $hero['name'];
+        }
+        return $response;
+    }
+
+
+     //Get films
+     function getFilms(){
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://inbenta-graphql-swapi-prod.herokuapp.com/api',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS =>'{"query":"{allFilms{films{title}}}","variables":{}}',
+          CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json'
+          ),
+        ));
+        
+        $response = curl_exec($curl);
+        $errors = curl_error($curl);
+        $responseInfo = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $responseArray = json_decode($response, true);
+
+        curl_close($curl);
+        return $responseArray;
+    }
+
+
+    //Convert films in messages
+    public function getMessageFilms(){
+        $films = $this->getFilms();
+        $response = [];
+        $response[] = 'The force is in this movies: ';
+        foreach($films['data']['allFilms']['films'] as $film){
+            $response[] = $film['title'];
+        }
+        return $response;
     }
 }

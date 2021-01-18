@@ -24,4 +24,6 @@ Route::get('/', [ChatbotController::class, 'index']);
 Route::get('access_token',[ChatController::class,'token']);
 Route::get('/session_token',[ChatController::class,'session']);
 Route::get('/send_message',[ChatController::class,'sendMessage']);
+Route::get('/get_message_heroes',[ChatController::class,'getMessageHeroes']);
+Route::get('/get_message_films',[ChatController::class,'getMessagefilms']);
 Route::get('/get_history',[ChatController::class,'getHistory']);
