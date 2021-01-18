@@ -17,7 +17,7 @@
         </div>
         <div class="row">
             <div class ="col" style="">
-                <ul id="chatBody"style = "list-style-type:circle">
+                <ul id="chatBody">
                 @isset($history)
                     @foreach($history as $key => $messages)
                         @foreach($messages['messageList'] as $key=> $message)
