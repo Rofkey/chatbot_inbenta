@@ -21,10 +21,11 @@ class ChatbotController extends Controller
         if(!$token || !$session){
             $this->completeConection();
         }
-        $history = $this->formatHistory($apiController->getHistory());
+        $history = $apiController->getHistory();
         
         $data = [];
         if($history != 'false'){
+            $history = $this->formatHistory($history);
             $data = ['history' =>$history];
         }
         return view('chatbot/index', $data);
