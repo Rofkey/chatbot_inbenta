@@ -20,7 +20,14 @@
                 <ul id="chatBody"style = "list-style-type:circle">
                 @isset($history)
                     @foreach($history as $message)
-                        <li> {{$message['user'] =='user'?"Me: ": "YodaBot: "}} {{$message['message'] }}</li>
+                        <li>
+                            @if($message['user'] === 'user')
+                            <span class='fw-bold'>Me: </span>
+                            @else
+                            <span class='fw-bold'>YodaBot: </span>
+                            @endif    
+                            {{$message['message'] }}
+                        </li>
                     @endforeach
                 @endisset
                 </ul>
@@ -56,7 +63,7 @@
         message = $('#message').val();
         if(message !== ''){
             $('#message').val('');
-            $('#chatBody').append('<li>Me: '+message+'</li>');
+            $('#chatBody').append('<li> <span class="fw-bold">Me: </span>'+message+'</li>');
             $('#writting').show();
             //send message to chatbot
             $.ajax({
@@ -67,10 +74,10 @@
                     $('#writting').hide();
 
                     if(data !== 'false')
-                        $('#chatBody').append('<li>YodaBot: '+data+'</li>');
+                        $('#chatBody').append('<li> <span class="fw-bold">YodaBot: </span>'+data+'</li>');
                     else{
                         $('#chatBody').html('');
-                        alert("Error de session");
+                        alert("Session expired (Creating a new session...)");
                     }
                 }
             });

@@ -126,16 +126,22 @@ class ChatController extends Controller
         if($responseInfo !== 400 && $responseInfo !== 200){  
             $conection = new Chatbot;
             $controller->completeConection($conection);
-            $response = 'false';
-
+            return 'false';
         }
 
         //Session Expired -> Create a new Session conversation
         if($responseInfo === 400){
             $controller->newSession($conection);
+            return 'false';
+        }
+        
+        if(isset($responseArray['answers'])){
+            $response = $responseArray['answers'][0]['message'];
+        }else{
             $response = 'false';
         }
-        return $responseArray['answers']?$responseArray['answers'][0]['message']:'false';
+
+        return $response;
     }
 
     public function getHistory(){
