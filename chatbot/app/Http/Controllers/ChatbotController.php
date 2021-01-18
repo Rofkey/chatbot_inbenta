@@ -15,7 +15,11 @@ class ChatbotController extends Controller
      */
     public function index()
     {
-        return view('chatbot/index');
+        $apiController = new ChatController;
+        $history = $apiController->getHistory();
+
+
+        return view('chatbot/index',['history' => $history]);
     }
 
     /**

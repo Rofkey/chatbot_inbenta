@@ -138,15 +138,24 @@ class ChatController extends Controller
             $controller->newSession($conection);
             $response = 'false';
         }
-
-        return $array['answers'][0]['message'];
+        return $array['answers']?$array['answers'][0]['message']:'false';
     }
 
-    public function getHistory(Request $request){
-        //get token
-        $token = $this->token($request, true);
-        //get session
-        $session = $this->session($request, true);
+    public function getHistory(){
+        //Cargamos controlador para controlar todo el chat.
+        $controller = new ChatbotController;
+        //Buscamos la ultima conecci alguna session creada.
+        $conection = Chatbot::latest()->first();
+
+        //si no existe se crea el token y se genera una nueva session de conversación.
+        if(!$conection){
+            //create a new ChatBot
+            $conection = new Chatbot;
+            $controller->completeConection($conection);
+        }
+
+        $token = $conection->getToken();
+        $session = $conection->getSession();
 
         $curl = curl_init();
 
@@ -166,9 +175,16 @@ class ChatController extends Controller
           ),
         ));
         
-        $response = curl_exec($curl);
+         $response = curl_exec($curl);
+        $errors = curl_error($curl);
+        $responseInfo = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+
+        $header = substr($response, 0,$header_size);
+        $body = substr($response, $header_size);
+        $array = json_decode($response, true);
         curl_close($curl);
-        $request->session()->put('access_token',"prueba");
-        dump($request->session()->all());die();
+
+        return $array;
     }
 }
