@@ -118,11 +118,8 @@ class ChatController extends Controller
         $response = curl_exec($curl);
         $errors = curl_error($curl);
         $responseInfo = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
 
-        $header = substr($response, 0,$header_size);
-        $body = substr($response, $header_size);
-        $array = json_decode($response, true);
+        $responseArray = json_decode($response, true);
         curl_close($curl);
 
         //User unauthorized -> Create a new Chatbot (Token + Sesion).
@@ -138,7 +135,7 @@ class ChatController extends Controller
             $controller->newSession($conection);
             $response = 'false';
         }
-        return $array['answers']?$array['answers'][0]['message']:'false';
+        return $responseArray['answers']?$responseArray['answers'][0]['message']:'false';
     }
 
     public function getHistory(){
@@ -175,16 +172,12 @@ class ChatController extends Controller
           ),
         ));
         
-         $response = curl_exec($curl);
+        $response = curl_exec($curl);
         $errors = curl_error($curl);
         $responseInfo = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $header_size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
-
-        $header = substr($response, 0,$header_size);
-        $body = substr($response, $header_size);
-        $array = json_decode($response, true);
+        $responseArray = json_decode($response, true);
         curl_close($curl);
 
-        return $array;
+        return $responseArray;
     }
 }

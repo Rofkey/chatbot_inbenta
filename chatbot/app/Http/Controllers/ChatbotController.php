@@ -17,13 +17,11 @@ class ChatbotController extends Controller
     {
         $apiController = new ChatController;
         $history = $apiController->getHistory();
-
-
         return view('chatbot/index',['history' => $history]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create a new complete Conection. Token + Session.
      *
      * @return \Illuminate\Http\Response
      */
@@ -38,7 +36,7 @@ class ChatbotController extends Controller
     }
 
      /**
-     * Show the form for creating a new resource.
+     * create new session with a token of conection.
      *
      * @return \Illuminate\Http\Response
      */

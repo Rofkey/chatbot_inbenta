@@ -18,9 +18,11 @@
         <div class="row">
             <div class ="col" style="">
                 <ul id="chatBody"style = "list-style-type:circle">
-                @foreach($history as $message)
-                    <li> {{$message['user'] =='user'?"Me: ": "YodaBot: "}} {{$message['message'] }}</li>
-                @endforeach
+                @isset($history)
+                    @foreach($history as $message)
+                        <li> {{$message['user'] =='user'?"Me: ": "YodaBot: "}} {{$message['message'] }}</li>
+                    @endforeach
+                @endisset
                 </ul>
             </div>
          </div>
